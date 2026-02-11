@@ -39,6 +39,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
             $dest_path = $uploadDir . $newFileName;
             
             if(move_uploaded_file($fileTmpPath, $dest_path)) {
+                // Fetch old avatar to delete
+                $stmt_old = $pdo->prepare("SELECT avatar FROM users WHERE id = ?");
+                $stmt_old->execute([$user_id]);
+                $old_user_data = $stmt_old->fetch();
+                
+                if ($old_user_data && !empty($old_user_data['avatar'])) {
+                    $old_avatar_path = $old_user_data['avatar'];
+                    // Only delete if it's a local file in uploads directory
+                    if (file_exists($old_avatar_path) && strpos($old_avatar_path, 'uploads/') !== false) {
+                        @unlink($old_avatar_path);
+                    }
+                }
+
                 $avatar = $dest_path; 
             }
         }

@@ -2,10 +2,20 @@
 // config.php
 session_start();
 
+// online database 
+// define('DB_HOST', 'sql208.infinityfree.com');
+// define('DB_USER', 'if0_41132114');
+// define('DB_PASS', 'GaJphtJOb7'); // InfinityFree Password
+// define('DB_NAME', 'if0_41132114_nfc_db');
+
+
+// offline database
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', ''); // Default XAMPP password is empty
 define('DB_NAME', 'nfc_db');
+
+
 
 try {
     $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);

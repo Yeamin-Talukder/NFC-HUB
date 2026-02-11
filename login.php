@@ -31,10 +31,12 @@
                     <label>Username or Email</label>
                     <input type="text" name="username" required placeholder="Enter your ID">
                 </div>
-                <div class="input-group">
+                <div class="input-group relative">
                     <label>Password</label>
-                    <input type="password" name="password" id="passwordInput" required placeholder="Enter your password">
-                    <i class="fas fa-eye password-toggle-icon" onclick="togglePassword('passwordInput', this)"></i>
+                    <input type="password" name="password" id="passwordInput" required placeholder="Enter your password" class="w-full pr-10">
+                    <i class="fas fa-eye absolute right-3 top-10 text-gray-400 cursor-pointer hover:text-accent transition-colors" 
+                       onclick="togglePassword('passwordInput', this)"
+                       style="top: 3.2rem;"></i>
                 </div>
                 <button type="submit" class="btn">Login</button>
             </form>

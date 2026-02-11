@@ -35,10 +35,12 @@
                     <label>Email</label>
                     <input type="email" name="email" required placeholder="your@email.com">
                 </div>
-                <div class="input-group">
+                <div class="input-group relative">
                     <label>Password</label>
-                    <input type="password" name="password" id="regPassword" required placeholder="Secure password">
-                    <i class="fas fa-eye password-toggle-icon" onclick="togglePassword('regPassword', this)"></i>
+                    <input type="password" name="password" id="regPassword" required placeholder="Secure password" class="w-full pr-10">
+                    <i class="fas fa-eye absolute right-3 top-10 text-gray-400 cursor-pointer hover:text-accent transition-colors" 
+                       onclick="togglePassword('regPassword', this)"
+                       style="top: 3.2rem;"></i>
                 </div>
                 <button type="submit" class="btn">Sign Up</button>
             </form>
