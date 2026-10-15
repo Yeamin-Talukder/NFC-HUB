@@ -52,4 +52,12 @@ function generateSlug($string) {
     $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
     return $slug . '-' . substr(md5(uniqid()), 0, 4); // Append random string to ensure uniqueness
 }
+
+function avatarUrl($avatar, $name, $size = 128) {
+    // Fall back to generated initials when there is no uploaded photo on disk
+    if (!empty($avatar) && (preg_match('~^https?://~i', $avatar) || file_exists(__DIR__ . '/' . $avatar))) {
+        return $avatar;
+    }
+    return 'https://ui-avatars.com/api/?name=' . urlencode($name ?: 'U') . '&background=22e58b&color=04140b&size=' . $size;
+}
 ?>

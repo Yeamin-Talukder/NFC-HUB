@@ -1,46 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Copy to Clipboard functionality
-    const copyBtns = document.querySelectorAll('.copy-btn');
-    
-    copyBtns.forEach(btn => {
+    // Toast helper
+    let toastEl;
+    window.showToast = (message, icon = 'fa-check') => {
+        if (!toastEl) {
+            toastEl = document.createElement('div');
+            toastEl.className = 'toast';
+            toastEl.setAttribute('role', 'status');
+            document.body.appendChild(toastEl);
+        }
+        toastEl.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+        toastEl.classList.add('show');
+        clearTimeout(toastEl._t);
+        toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 2000);
+    };
+
+    // Copy to clipboard
+    document.querySelectorAll('[data-copy]').forEach(btn => {
         btn.addEventListener('click', () => {
-            const targetId = btn.getAttribute('data-target');
-            const targetInput = document.getElementById(targetId);
-            
-            if (targetInput) {
-                targetInput.select();
-                targetInput.setSelectionRange(0, 99999); // For mobile devices
-                
-                try {
-                    navigator.clipboard.writeText(targetInput.value).then(() => {
-                        const originalText = btn.innerText;
-                        btn.innerText = 'Copied!';
-                        btn.style.background = '#00ff88';
-                        btn.style.color = '#000';
-                        
-                        setTimeout(() => {
-                            btn.innerText = originalText;
-                            btn.style.background = '';
-                            btn.style.color = '';
-                        }, 2000);
-                    });
-                } catch (err) {
-                    console.error('Failed to copy text: ', err);
-                }
+            const target = document.getElementById(btn.dataset.copy);
+            if (!target) return;
+            const value = target.value ?? target.textContent;
+            const done = () => window.showToast('Link copied');
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(value).then(done);
+            } else {
+                target.select();
+                document.execCommand('copy');
+                done();
             }
         });
     });
 
-    // Add 3D tilt effect to cards if we want to be extra fancy
-    const cards = document.querySelectorAll('.glass');
-    cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            card.style.setProperty('--x', `${x}px`);
-            card.style.setProperty('--y', `${y}px`);
+    // Show / hide password
+    document.querySelectorAll('[data-toggle-password]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = document.getElementById(btn.dataset.togglePassword);
+            const icon = btn.querySelector('i');
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            icon.classList.toggle('fa-eye', !show);
+            icon.classList.toggle('fa-eye-slash', show);
+            btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        });
+    });
+
+    // Tabs (dashboard on small screens)
+    document.querySelectorAll('[data-tab]').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('[data-tab]').forEach(t => t.classList.toggle('active', t === tab));
+            document.querySelectorAll('[data-panel]').forEach(p => p.classList.toggle('active', p.dataset.panel === tab.dataset.tab));
         });
     });
 });

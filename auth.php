@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'];
 
         if (empty($username) || empty($email) || empty($password)) {
-            die("All fields are required.");
+            redirect('register.php?error=missing');
         }
 
         // Hash password
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             redirect('dashboard.php');
         } catch (PDOException $e) {
-            die("Registration failed: " . $e->getMessage());
+            redirect('register.php?error=' . ($e->getCode() == 23000 ? 'taken' : 'failed'));
         }
     } elseif ($action === 'login') {
         $usernameOrEmail = sanitize($_POST['username']);
@@ -44,10 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['username'] = $user['username'];
                 redirect('dashboard.php');
             } else {
-                die("Invalid credentials. <a href='login.php'>Try again</a>");
+                redirect('login.php?error=invalid');
             }
         } catch (PDOException $e) {
-            die("Login failed: " . $e->getMessage());
+            redirect('login.php?error=failed');
         }
     }
 }

@@ -1,66 +1,66 @@
+<?php
+require_once 'config.php';
+if (isLoggedIn()) redirect('dashboard.php');
+$pageTitle = 'Create account';
+$error = $_GET['error'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - NFC Hub</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        accent: '#00ff88',
-                    }
-                }
-            }
-        }
-    </script>
+<?php include 'head.php'; ?>
 </head>
 <body>
     <?php include 'nav.php'; ?>
-    <div class="auth-container">
-        <div class="auth-box glass fade-in">
-            <h2>Create Account</h2>
-            <form action="auth.php" method="POST">
-                <input type="hidden" name="action" value="register">
-                <div class="input-group">
-                    <label>Username</label>
-                    <input type="text" name="username" required placeholder="Unique ID">
-                </div>
-                <div class="input-group">
-                    <label>Email</label>
-                    <input type="email" name="email" required placeholder="your@email.com">
-                </div>
-                <div class="input-group relative">
-                    <label>Password</label>
-                    <input type="password" name="password" id="regPassword" required placeholder="Secure password" class="w-full pr-10">
-                    <i class="fas fa-eye absolute right-3 top-10 text-gray-400 cursor-pointer hover:text-accent transition-colors" 
-                       onclick="togglePassword('regPassword', this)"
-                       style="top: 3.2rem;"></i>
-                </div>
-                <button type="submit" class="btn">Sign Up</button>
-            </form>
-            <p class="switch-link">Already have an account? <a href="login.php">Login</a></p>
+
+    <main class="auth-wrap">
+        <div class="auth-card fade-in">
+            <div class="auth-head">
+                <div class="auth-icon"><i class="fas fa-user-plus"></i></div>
+                <h1>Create your account</h1>
+                <p>Your profile is ready in under a minute</p>
+            </div>
+
+            <div class="card card-pad">
+                <?php if ($error === 'taken'): ?>
+                    <div class="alert alert-error" style="margin-bottom:16px"><i class="fas fa-circle-exclamation"></i> That username or email is already in use.</div>
+                <?php elseif ($error === 'missing'): ?>
+                    <div class="alert alert-error" style="margin-bottom:16px"><i class="fas fa-circle-exclamation"></i> Please fill in all fields.</div>
+                <?php elseif ($error): ?>
+                    <div class="alert alert-error" style="margin-bottom:16px"><i class="fas fa-circle-exclamation"></i> Something went wrong. Please try again.</div>
+                <?php endif; ?>
+
+                <form action="auth.php" method="POST" class="form-grid">
+                    <input type="hidden" name="action" value="register">
+                    <div class="field">
+                        <label class="label" for="username">Username</label>
+                        <div class="input-icon">
+                            <i class="fas fa-at"></i>
+                            <input class="input" type="text" id="username" name="username" required autocomplete="username" placeholder="janedoe" autofocus>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="email">Email</label>
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input class="input" type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="password">Password</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input class="input" type="password" id="password" name="password" required autocomplete="new-password" placeholder="At least 6 characters" minlength="6">
+                            <button type="button" class="input-action" data-toggle-password="password" aria-label="Show password"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Create account</button>
+                </form>
+            </div>
+
+            <p class="auth-foot">Already have an account? <a href="login.php">Log in</a></p>
         </div>
-    </div>
-    <script src="assets/js/bg-animation.js"></script>
-    <script>
-        function togglePassword(inputId, icon) {
-            const input = document.getElementById(inputId);
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
-        }
-    </script>
+    </main>
+
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
