@@ -1,0 +1,53 @@
+name: Deploy to InfinityFree
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create config.local.php from secrets
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          php -r '
+            $out = "<?php\n";
+            foreach (["DB_HOST", "DB_USER", "DB_PASS", "DB_NAME"] as $k) {
+                $v = getenv($k);
+                if ($v === false || $v === "") { fwrite(STDERR, "Missing secret $k\n"); exit(1); }
+                $out .= "define(" . var_export($k, true) . ", " . var_export($v, true) . ");\n";
+            }
+            file_put_contents("config.local.php", $out);
+          '
+
+      - name: Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          server-dir: /htdocs/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            .claude/**
+            uploads/**
+            schema.sql
+            README.md
+            config.example.php

@@ -2,18 +2,18 @@
 // config.php
 session_start();
 
-// online database 
-// define('DB_HOST', 'sql208.infinityfree.com');
-// define('DB_USER', 'if0_41132114');
-// define('DB_PASS', 'GaJphtJOb7'); // InfinityFree Password
-// define('DB_NAME', 'if0_41132114_nfc_db');
+// Database credentials.
+// Production values live in config.local.php, which is NOT committed to git.
+// The GitHub Actions deploy workflow generates it from repository secrets.
+if (file_exists(__DIR__ . '/config.local.php')) {
+    require __DIR__ . '/config.local.php';
+}
 
-
-// offline database
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', ''); // Default XAMPP password is empty
-define('DB_NAME', 'nfc_db');
+// Local XAMPP defaults (used when config.local.php doesn't define them)
+defined('DB_HOST') || define('DB_HOST', 'localhost');
+defined('DB_USER') || define('DB_USER', 'root');
+defined('DB_PASS') || define('DB_PASS', '');
+defined('DB_NAME') || define('DB_NAME', 'nfc_db');
 
 
 
